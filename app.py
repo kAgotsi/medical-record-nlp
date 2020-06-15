@@ -1,55 +1,64 @@
 import os
-import logging
-from logging import Formatter, FileHandler
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, render_template, request,jsonify
 
-from ocr import process_image
 
 app = Flask(__name__)
-_VERSION = 1  # API version
 
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-@app.route('/')
-def main():
-    return render_template('index.html')
+@app.route("/",methods=['GET', 'POST'])
+def index():
+    return jsonify("ok")
 
+@app.route("/process",methods=['GET', 'POST'])
+def upload():
+    print("request",request.files)
+    target = os.path.join(APP_ROOT, 'images/')
+    print(target)
+    print("request",request.files)
 
-@app.route('/v{}/ocr'.format(_VERSION), methods=["POST"])
-def ocr():
-    try:
-        url = request.json['image_url']
-        if 'jpg' in url:
-            output = process_image(url)
-            return jsonify({"output": output})
-        else:
-            return jsonify({"error": "only .jpg files, please"})
-    except:
-        return jsonify(
-            {"error": "Did you mean to send: {'image_url': 'some_jpeg_url'}"}
-        )
+    if not os.path.isdir(target):
+        os.mkdir(target)
+    
+    save_image(request)
+    #ocr()
+    #extract_medical_dat
+    
+    
+    medical_data = {'patient_name': 'Alice', 'doctor_name': 'Hammed'}
+    return jsonify(medical_data)
 
+"""
+    save image in /image dicectory
+    
+    @return
+        the file name
+"""
+def save_image(request):   
+    for file in request.files.getlist("file"):
+        print(file)
+        filename = file.filename
+        destination = "/".join([target, filename])
+        print(destination)
+        file.save(destination)
+    return destination
+   
+"""
+    process ocr
+    
+    @return
+        text extracted from image
+"""        
+def ocr(imagefile):
+    pass
+    
+"""
+    extract medical data from ocr text
+    @return
+        data structure of medical data
+"""    
+def extract_medical_dat():
+    pass
 
-@app.errorhandler(500)
-def internal_error(error):
-    print str(error)  # ghetto logging
-
-
-@app.errorhandler(404)
-def not_found_error(error):
-    print str(error)
-
-if not app.debug:
-    file_handler = FileHandler('error.log')
-    file_handler.setFormatter(
-        Formatter('%(asctime)s %(levelname)s: \
-            %(message)s [in %(pathname)s:%(lineno)d]')
-    )
-    app.logger.setLevel(logging.INFO)
-    file_handler.setLevel(logging.INFO)
-    app.logger.addHandler(file_handler)
-    app.logger.info('errors')
-
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+if __name__ == "__main__":
+    app.run(host='0.0.0.0',port=5000, debug=True)
