@@ -1,0 +1,4 @@
+Protéine C Reactive,Créatinine,SOdiUM,Potassium,CalciUuM,formule CKD-E,Polynucléaires neutrophiles,v Plaquettes,Hématies,Leucocytes,
+Culot de centrifugation, Cellules épithéliales, Cylindres, Cristaux, Parasites, Flore microbienne, Protides totaux, reserve alcaline, chlore,
+Albumineme, Monocytes, Lymphocytes, Polynucleaires basophiles, Polynucleaires neutrophiles,
+Polynucleaire eosinophiles, urée, reaction, temoin
