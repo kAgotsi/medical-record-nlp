@@ -134,3 +134,6 @@ ocr/
 
 #image
 images/
+
+#medicaldata
+medicaldata/
